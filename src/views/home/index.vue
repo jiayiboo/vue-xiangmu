@@ -1,12 +1,13 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div>
+    <p>AppHomeponent</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
+  // eslint-disable-next-line vue/no-parsing-error
+  name: 'Apphome',
   data () {
     return {
 

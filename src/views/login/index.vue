@@ -28,7 +28,7 @@
           <el-form-item>
             <el-button class="btn-login"
                        type="primary"
-                       @click="onSubmit">登陆</el-button>
+                       @click="handleLogin">登陆</el-button>
             <!-- <el-button>取消</el-button> -->
           </el-form-item>
         </el-form>
@@ -59,6 +59,24 @@ export default {
     onSubmit () {
       console.log('submit!')
     },
+    handleLogin () {
+      axios({
+        method: 'POST',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
+        data: this.form
+      }).then(res => {
+        this.$message({
+          // showClose: true,
+          message: '登陆成功',
+          type: 'success'
+        })
+        this.$router.push({
+          name: 'home'
+        })
+      }).catch(res => {
+        this.$message.error('登陆失败，验证码错误')
+      })
+    },
     handleSendCode () {
       const { mobile } = this.form
       if (this.captchaObj) {
@@ -82,11 +100,27 @@ export default {
           captchaObj.onReady(function () {
             captchaObj.verify()
           }).onSuccess(function () {
-            console.log('验证成功了')
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate } =
+              captchaObj.getValidate()
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              params: {
+                challenge,
+                seccode,
+                validate
+              }
+            }).then(res => {
+              console.log(res.date)
+            })
           })
         })
       })
     }
+
   }
 }
 </script>
